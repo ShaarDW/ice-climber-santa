@@ -153,18 +153,46 @@ export class Player {
         }
     } else {
         if (onGround) {
-            const wasRunning = Math.abs(sprite.body.velocity.x) > 20;
-            if (wasRunning) {
-                sprite.setVelocityX(sprite.body.velocity.x * 0.85);
-                this.state = 'sliding';
-                this.isSliding = true;
-                sprite.setTexture('player_slip');
+            // Sincronizar con nube si existe
+            if (this.cloudManager) {
+                const activeCloud = this.cloudManager.getActiveCloud();
+                if (activeCloud) {
+                    // El jugador sigue el movimiento de la nube automáticamente
+                    sprite.setVelocityX(activeCloud.body.velocity.x);
+                    this.state = 'idle';
+                    sprite.setTexture('player_walk');
+                    sprite.anims.play('player_idle', true);
+                } else {
+                    // Sin nube, comportamiento normal
+                    const wasRunning = Math.abs(sprite.body.velocity.x) > 20;
+                    if (wasRunning) {
+                        sprite.setVelocityX(sprite.body.velocity.x * 0.85);
+                        this.state = 'sliding';
+                        this.isSliding = true;
+                        sprite.setTexture('player_slip');
+                    } else {
+                        sprite.setVelocityX(0);
+                        this.isSliding = false;
+                        this.state = 'idle';
+                        sprite.setTexture('player_walk');
+                        sprite.anims.play('player_idle', true);
+                    }
+                }
             } else {
-                sprite.setVelocityX(0);
-                this.isSliding = false;
-                this.state = 'idle';
-                sprite.setTexture('player_walk');
-                sprite.anims.play('player_idle', true);
+                // Sin CloudManager, comportamiento normal
+                const wasRunning = Math.abs(sprite.body.velocity.x) > 20;
+                if (wasRunning) {
+                    sprite.setVelocityX(sprite.body.velocity.x * 0.85);
+                    this.state = 'sliding';
+                    this.isSliding = true;
+                    sprite.setTexture('player_slip');
+                } else {
+                    sprite.setVelocityX(0);
+                    this.isSliding = false;
+                    this.state = 'idle';
+                    sprite.setTexture('player_walk');
+                    sprite.anims.play('player_idle', true);
+                }
             }
         }
     }

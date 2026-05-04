@@ -9,12 +9,25 @@ export class Preloader extends Scene
     }
 
     init() {
-    // Barra de progreso simple sin imagen de fondo
-    this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
-    const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
+    // Fondo negro
+    this.cameras.main.setBackgroundColor('#000000');
+
+    // Barra de progreso centrada correctamente (pantalla es 512x512)
+    const barBg = this.add.rectangle(256, 250, 400, 40, 0x222222).setStrokeStyle(2, 0xffffff);
+    const bar = this.add.rectangle(256 - 198, 250, 4, 36, 0x00ff00);
+    
     this.load.on('progress', (progress) => {
-        bar.width = 4 + (460 * progress);
+        bar.width = 4 + (392 * progress);
     });
+
+    // Texto "Cargando..." con puntos animados
+    const loadingText = this.add.text(256, 330, 'CARGANDO', {
+        fontFamily: 'Arial',
+        fontSize: 24,
+        color: '#ffffff',
+        align: 'center'
+    }).setOrigin(0.5);
+
     }
 
     preload() {
